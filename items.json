@@ -1,0 +1,25 @@
+{
+    "item1": {
+        "name": "Футболка UZcotton мужская",
+        "costDiscount": 522,
+        "cost": 1051,
+        "count": 1,
+        "id": 1,
+        "stock": 2
+    },
+    "item2": {
+        "name": "Силиконовый чехол картхолдер (отверстия) для карт, прозрачный кейс бампер на Apple iPhone XR, MobiSafe",
+        "costDiscount": 10500,
+        "cost": 11500,
+        "count": 200,
+        "id": 2
+    },
+    "item3": {
+        "name": "Карандаши цветные Faber-Castell 'Замок', набор 24 цвета, заточенные, шестигранные, Faber-Castell",
+        "costDiscount": 247,
+        "cost": 475,
+        "count": 2,
+        "id": 3,
+        "stock": 2
+    }
+}
