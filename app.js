@@ -1,410 +1,216 @@
-const item3MobileSelect = () => {
-    let chbox3 = document.getElementById('item3-mobile');
-    let select_all = document.getElementById('select-all');
-    if (chbox3.checked == true) {
-        chbox3.checked = false; 
-        select_all.checked = false;
-    } else {
-        chbox3.checked = !false; 
-        select_all.checked = false;
+document.addEventListener('DOMContentLoaded', async function () {
+    const fetchData = async () => {
+        let data = await fetch('./items.json')
+            .then(res => res.json());
+        return data;
     }
-}
+    
+    let data = await fetchData()
 
-const item1MobileSelect = () => {
-    let chbox1 = document.getElementById('item1-mobile');
-    let select_all = document.getElementById('select-all');
-    if (chbox1.checked == true) {
-        chbox1.checked = false; 
-        select_all.checked = false;
-    } else {
-        chbox1.checked = !false; 
-        select_all.checked = false;
-    }
-}
-
-const item2MobileSelect = () => {
-    let chbox2 = document.getElementById('item2-mobile');
-    let select_all = document.getElementById('select-all');
-    if (chbox2.checked == true) {
-        chbox2.checked = false;
-        select_all.checked = false;
-    } else {
-        chbox2.checked = !false; 
-        select_all.checked = false;
-    }
-}
-
-const item1Select = () => {
-    let chbox1 = document.getElementById('item-1');
-    let select_all = document.getElementById('select-all');
-    if (chbox1.checked == true) {
-        chbox1.checked = false;
-        select_all.checked = false;
-    } else {
-        chbox1.checked = !false; 
-        select_all.checked = false;
-    }
-}
-
-const item2Select = () => {
-    let chbox2 = document.getElementById('item-2');
-    let select_all = document.getElementById('select-all');
-    if (chbox2.checked == true) {
-        chbox2.checked = false;
-        select_all.checked = false;
-    } else {
-        chbox2.checked = !false; 
-        select_all.checked = false;
-    }
-}
-
-const item3Select = () => {
-    let chbox3 = document.getElementById('item-3');
-    let select_all = document.getElementById('select-all');
-    if (chbox3.checked == true) {
-        chbox3.checked = false;
-        select_all.checked = false;
-    } else {
-        chbox3.checked = !false; 
-        select_all.checked = false;
-    }
-}
-
-const selectAllItems = () => {
-    let checkbx1 = document.getElementById('item-1');
-    let checkbx2 = document.getElementById('item-2');
-    let checkbx3 = document.getElementById('item-3');
-    if (checkbx1.checked == false || checkbx2.checked == false || checkbx3.checked == false) {
-        checkbx1.checked = true;
-        checkbx2.checked = true;
-        checkbx3.checked = true;
-    } else {
-        checkbx1.checked = false;
-        checkbx2.checked = false;
-        checkbx3.checked = false;
+    const recalcItems = () => {
+        for (let i = 1; i <= 3; i++) {
+            let dataInfo = data["item" + i];
+            let elem = document.querySelectorAll('.good.item-' + i)[0];
+            let elemMob = document.querySelectorAll('.good.item' + i + '-mobile')[0];
+            if (dataInfo == undefined){
+                if (elem != undefined){
+                    elem.remove();
+                }
+                if (elemMob != undefined){
+                    elemMob.remove();
+                }
+                continue;
+            }
+            if (elem != undefined){
+                document.querySelector('#item-' + i + '-count').textContent = dataInfo.count;
+                document.querySelector('#item-' + i + '-cost').textContent = dataInfo.count*dataInfo.costDiscount;
+                document.querySelector('#item-' + i + '-cost-final').textContent = dataInfo.count*dataInfo.cost + ' сом';
+            }
+            if (elemMob != undefined){
+                document.querySelector('#item' + i + '-mobile-count').textContent = dataInfo.count;
+                document.querySelector('#mobileCost' + i).textContent = dataInfo.count*dataInfo.costDiscount + ' сом';
+                document.querySelector('#item-' + i + '-cost-final-mobile').textContent = ' ' + dataInfo.count*dataInfo.cost + ' сом';
+            }
+        }
     }
 
-    let checkbx1_mobile = document.getElementById('item1-mobile');
-    let checkbx2_mobile = document.getElementById('item2-mobile');
-    let checkbx3_mobile = document.getElementById('item3-mobile');
+    const recalc = () => {
+        let keys = Object.keys(data);
+        let totalCount = 0;
+        let totalCost = 0;
+        let totalCostDiscount = 0;
+        keys.forEach(key => {
+            let dataInfo = data[key];
+            totalCount += dataInfo.count;
+            totalCost += dataInfo.count * dataInfo.cost;
+            totalCostDiscount += dataInfo.count * dataInfo.costDiscount;
+        });
+        document.querySelector('#basket-items-count').textContent = keys.length;
+        document.querySelector(`#sale`).textContent = totalCost - totalCostDiscount;
+        document.querySelector(`#sale2`).textContent = totalCost - totalCostDiscount;
+        document.querySelector('#cost-all-items').textContent = totalCostDiscount;
+        document.querySelector('#cost-all-items-mobile').textContent = totalCostDiscount;
+        document.querySelector('#allItemsCount').textContent = totalCount;
+        document.querySelector('#allItemsCountMobile').textContent = totalCount;
+        document.querySelector('#costWithoutSale').textContent = totalCost;
+        document.querySelector('#costWithoutSaleMobile').textContent = totalCost;
+        document.getElementById('all-items-count').textContent = totalCount;
+        document.getElementById('all-items-cost').textContent = totalCostDiscount;
+        if (keys.length === 0) {
+            document.querySelector('.basket').innerHTML = "<h1 style='width: 100%'>Товаров нет</h1>";
+            document.querySelector('.basket').style.height = '100vh';
+            document.querySelector('.final-info-mobile').remove();
+            document.querySelector('.final-info').remove();
+            document.querySelector('#basket-items-count').remove();
+        }
+        if (document.querySelector('#oplata-srazu').checked) {
+            document.querySelector('#zakazat').textContent = 'Оплатить ' + totalCostDiscount + ' сом';
+            document.querySelector('#srazu').style.display = 'none';
+        }
+    }
 
-    if (checkbx1_mobile.checked == false || checkbx2_mobile.checked == false || checkbx3_mobile.checked == false) {
-        checkbx1_mobile.checked = true;
-        checkbx2_mobile.checked = true;
-        checkbx3_mobile.checked = true;
-    } else {
-        checkbx1_mobile.checked = false;
-        checkbx2_mobile.checked = false;
-        checkbx3_mobile.checked = false;
+    recalcItems();
+    recalc();
+    
+    const deleteItem = (el) => {
+        let goodIndex = el.srcElement.closest('.good').className.replace('good item-', '').replace('good item', '').replace('-mobile', '');
+        delete data['item' + goodIndex];
+        recalcItems();
+        recalc();
     }
-}
 
-const addToFavotite = (event) => {
-    if (event.target.style.stroke == 'red') {
-        event.target.style.stroke = 'black';
-    } else {
-        event.target.style.stroke = 'red';
+    const deleteEmptyItem = (el) => {
+        el.srcElement.closest('.good').remove();
+        let cntEl = document.querySelector(`#empty-items-count`);
+        let resCnt = cntEl.textContent - 1;
+        if (resCnt == 0){
+            document.querySelector(`.empty-items-header`).remove();
+        }else{
+            cntEl.textContent = resCnt;
+        }
     }
-}
-
-const deleteItem = (id) => {
-    document.getElementById(`cost-all-items`).textContent = +document.getElementById(`cost-all-items`).textContent - +document.getElementById(`item-${id}-cost`).innerHTML;
-    document.getElementById(`cost-all-items2`).textContent = parseInt(document.getElementById(`cost-all-items2`).textContent) - parseInt(document.getElementById(`item${id}-mobile-cost`).textContent) + ' сом';
-    document.getElementById(`without-sale`).textContent = parseInt(document.getElementById('without-sale').textContent) - parseInt(document.getElementById(`item-${id}-cost-final`).textContent) + ' сом';
-    document.getElementById(`without-sale2`).textContent = parseInt(document.getElementById('without-sale2').textContent) - parseInt(document.getElementById(`item-${id}-cost-final-mobile`).textContent) + ' сом'
-    document.getElementById(`count-all-items`).innerHTML = parseInt(document.getElementById(`count-all-items`).innerHTML) - +document.getElementById(`item-${id}-count`).innerHTML + ' товара';
-    document.getElementById(`count-all-items2`).innerHTML = parseInt(document.getElementById(`count-all-items2`).innerHTML) - +document.getElementById(`item${id}-mobile-count`).innerHTML + ' товара';
-    document.getElementsByClassName(`item-${id}`)[0].remove();
-    document.getElementsByClassName(`empty-item-${id}`)[0].remove();
-    document.getElementsByClassName(`item${id}-mobile`)[0].remove();
-    document.getElementsByClassName(`item${id}-empty-mobile`)[0].remove();
-    document.getElementById('empty-items-count').innerHTML = +document.getElementById('empty-items-count').innerHTML - 1;
-    document.getElementById('basket-items-count').innerHTML = +document.getElementById('basket-items-count').innerHTML - 1;
-    if (+document.getElementById('empty-items-count').innerHTML == 0) {
-        document.getElementById('basket-items-count').remove();
-        document.getElementsByClassName('select-all')[0].remove();
-        document.getElementsByClassName('empty-items-header')[0].remove();
-        document.getElementsByClassName('delivery')[0].remove();
-        document.getElementsByClassName('delivery-mobile')[0].remove();
-        document.getElementsByClassName('payment')[0].remove();
-        document.getElementsByClassName('client')[0].remove();
-        document.getElementsByClassName('final-info')[0].remove();
-        document.getElementsByClassName('final-info-mobile')[0].remove();
-        let p = document.createElement('p');
-        p.innerHTML = 'В корзине пусто';
-        document.getElementsByClassName('basket')[0].getElementsByTagName('h1')[0].append(p);
-        document.getElementsByTagName('main')[0].style.height = '1200px';
-    }
-}
-
-const plusItem = (id) => {
-    document.getElementById(`item-${id}-count`).innerHTML = +document.getElementById(`item-${id}-count`).innerHTML + 1;
-    document.getElementById(`item${id}-mobile-count`).innerHTML = +document.getElementById(`item${id}-mobile-count`).innerHTML + 1;
-    document.getElementById(`count-all-items`).innerHTML = (parseInt(document.getElementById(`count-all-items`).innerHTML) + 1) + ' товара';
-    document.getElementById(`count-all-items2`).innerHTML = (parseInt(document.getElementById(`count-all-items2`).innerHTML) + 1) + ' товара';
-    if (id == 1) {
-        document.getElementById(`item-${id}-cost`).innerHTML = +document.getElementById(`item-${id}-cost`).innerHTML + 522;
-        document.getElementById(`item${id}-mobile-cost`).firstChild.textContent = parseInt(document.getElementById(`item${id}-mobile-cost`).firstChild.textContent) + 522;
-        document.getElementById(`cost-all-items`).innerHTML = parseInt(document.getElementById(`cost-all-items`).innerHTML) + 522;
-        document.getElementById(`cost-all-items2`).innerHTML = parseInt(document.getElementById(`cost-all-items2`).innerHTML) + 522 + ' сом';
-        document.getElementById(`item-${id}-cost-final`).textContent = (parseInt(document.getElementById(`item-${id}-cost`).textContent) * 100) / (522 * 100 / 1051) + ' ' + 'сом';
-        document.getElementById(`without-sale`).textContent = parseInt(document.getElementById(`without-sale`).textContent) + 1051 + ' сом';
-        document.getElementById(`without-sale2`).textContent = parseInt(document.getElementById(`without-sale2`).textContent) + 1051 + ' сом';
-        document.getElementById(`item-${id}-cost-final-mobile`).textContent = (parseInt(document.getElementById(`item${id}-mobile-cost`).textContent) * 100) / (522 * 100 / 1051) + ' ' + 'сом';
-    }
-    if (id == 2) {
-        document.getElementById(`item-${id}-cost`).innerHTML = +document.getElementById(`item-${id}-cost`).innerHTML + 10500;
-        document.getElementById(`cost-all-items`).innerHTML = parseInt(document.getElementById(`cost-all-items`).innerHTML) + 10500;
-        document.getElementById(`cost-all-items2`).innerHTML = parseInt(document.getElementById(`cost-all-items2`).innerHTML) + 10500 + ' сом';
-        document.getElementById(`item${id}-mobile-cost`).firstChild.textContent = parseInt(document.getElementById(`item${id}-mobile-cost`).firstChild.textContent) + 10500;
-        document.getElementById(`item-${id}-cost-final`).textContent = (parseInt(document.getElementById(`item-${id}-cost`).textContent) * 100) / (2100047 * 100 / 2300047) + ' ' + 'сом';
-        document.getElementById(`item-${id}-cost-final-mobile`).textContent = (parseInt(document.getElementById(`item${id}-mobile-cost`).textContent) * 100) / (2100047 * 100 / 2300047) + ' ' + 'сом';
-        document.getElementById(`without-sale`).textContent = parseInt(document.getElementById(`without-sale`).textContent) + 16275 + ' сом';
-        document.getElementById(`without-sale2`).textContent = parseInt(document.getElementById(`without-sale2`).textContent) + 16275 + ' сом';
-    }
-    if (id == 3) {
-        document.getElementById(`item-${id}-cost`).innerHTML = +document.getElementById(`item-${id}-cost`).innerHTML + 247;
-        document.getElementById(`cost-all-items`).innerHTML = parseInt(document.getElementById(`cost-all-items`).innerHTML) + 247;
-        document.getElementById(`cost-all-items2`).innerHTML = parseInt(document.getElementById(`cost-all-items2`).innerHTML) + 10500 + ' сом';
-        document.getElementById(`item${id}-mobile-cost`).firstChild.textContent = parseInt(document.getElementById(`item${id}-mobile-cost`).firstChild.textContent) + 247;
-        document.getElementById(`item-${id}-cost-final`).textContent = (parseInt(document.getElementById(`item-${id}-cost`).textContent) * 100) / (247 * 100 / 475) + ' ' + 'сом';
-        document.getElementById(`item-${id}-cost-final-mobile`).textContent = (parseInt(document.getElementById(`item${id}-mobile-cost`).textContent) * 100) / (247 * 100 / 475) + ' ' + 'сом';
-        document.getElementById(`without-sale`).textContent = parseInt(document.getElementById(`without-sale`).textContent) + 475 + ' сом';
-        document.getElementById(`without-sale2`).textContent = parseInt(document.getElementById(`without-sale2`).textContent) + 475 + ' сом';
-    }
-    document.getElementById('with-sale').textContent = '-' + (parseInt(document.getElementById('without-sale').textContent) - parseInt(document.getElementById('cost-all-items').textContent)) + ' сом';
-    document.getElementById('with-sale2').innerHTML = '-' + (parseInt(document.getElementById('without-sale').innerHTML) - parseInt(document.getElementById('cost-all-items2').innerHTML)) + ' сом';
-}
-
-const minusItem = (id) => {
-    document.getElementById(`item-${id}-count`).innerHTML = +document.getElementById(`item-${id}-count`).innerHTML - 1;
-    document.getElementById(`item${id}-mobile-count`).innerHTML = +document.getElementById(`item${id}-mobile-count`).innerHTML - 1;
-    document.getElementById(`count-all-items`).innerHTML = (parseInt(document.getElementById(`count-all-items`).innerHTML) - 1) + ' товара';
-    document.getElementById(`count-all-items2`).innerHTML = (parseInt(document.getElementById(`count-all-items2`).innerHTML) - 1) + ' товара';
-    if (+document.getElementById(`item-${id}-count`).textContent == 0) {
-        document.getElementsByClassName(`item-${id}`)[0].remove();
-        document.getElementsByClassName(`item${id}-mobile`)[0].remove();
-        document.getElementsByClassName(`empty-item-${id}`)[0].remove();
-        document.getElementsByClassName(`item${id}-empty-mobile`)[0].remove();
-        document.getElementById('empty-items-count').innerHTML = +document.getElementById('empty-items-count').innerHTML - 1;
-        document.getElementById('basket-items-count').innerHTML = +document.getElementById('basket-items-count').innerHTML - 1;
-        document.getElementById('all-items-cost').innerHTML = +document.getElementById(`item-1-cost`).innerHTML + +document.getElementById(`item-2-cost`).innerHTML + +document.getElementById(`item-3-cost`).innerHTML;
-    };
-    if (id == 1) {
-        document.getElementById(`item-${id}-cost`).innerHTML = +document.getElementById(`item-${id}-cost`).innerHTML - 522;
-        document.getElementById(`cost-all-items`).innerHTML = parseInt(document.getElementById(`cost-all-items`).innerHTML) - 522;
-        document.getElementById(`cost-all-items2`).innerHTML = parseInt(document.getElementById(`cost-all-items2`).innerHTML) - 522 + ' сом';
-        document.getElementById(`without-sale`).textContent = parseInt(document.getElementById(`without-sale`).textContent) - 1051 + ' сом';
-        document.getElementById(`without-sale2`).textContent = parseInt(document.getElementById(`without-sale2`).textContent) - 1051 + ' сом';
-        document.getElementById(`item${id}-mobile-cost`).firstChild.textContent = parseInt(document.getElementById(`item${id}-mobile-cost`).firstChild.textContent) - 522;
-        document.getElementById(`item-${id}-cost-final`).textContent = (parseInt(document.getElementById(`item-${id}-cost`).textContent) * 100) / (522 * 100 / 1051) + ' ' + 'сом';
-        document.getElementById(`item-${id}-cost-final-mobile`).textContent = (parseInt(document.getElementById(`item${id}-mobile-cost`).textContent) * 100) / (522 * 100 / 1051) + ' ' + 'сом';
-        document.getElementById('all-items-cost').innerHTML = +document.getElementById(`item-1-cost`).innerHTML + +document.getElementById(`item-2-cost`).innerHTML + +document.getElementById(`item-3-cost`).innerHTML;
-    }
-    if (id == 2) {
-        document.getElementById(`item-${id}-cost`).innerText = +document.getElementById(`item-${id}-cost`).innerHTML - 10500;
-        document.getElementById(`cost-all-items`).innerHTML = parseInt(document.getElementById(`cost-all-items`).innerHTML) - 10500;
-        document.getElementById(`cost-all-items2`).innerHTML = parseInt(document.getElementById(`cost-all-items2`).innerHTML) - 10500 + ' сом';
-        document.getElementById(`without-sale`).textContent = parseInt(document.getElementById(`without-sale`).textContent) - 16275 + ' сом';
-        document.getElementById(`without-sale2`).textContent = parseInt(document.getElementById(`without-sale2`).textContent) - 16275 + ' сом';
-        document.getElementById(`item${id}-mobile-cost`).firstChild.textContent = parseInt(document.getElementById(`item${id}-mobile-cost`).firstChild.textContent) - 10500;
-        document.getElementById(`item-${id}-cost-final`).textContent = (parseInt(document.getElementById(`item-${id}-cost`).textContent) * 100) / (2100047 * 100 / 2300047) + ' ' + 'сом';
-        document.getElementById(`item-${id}-cost-final-mobile`).textContent = (parseInt(document.getElementById(`item${id}-mobile-cost`).textContent) * 100) / (2100047 * 100 / 2300047) + ' ' + 'сом';
-        document.getElementById('all-items-cost').innerHTML = +document.getElementById(`item-1-cost`).innerHTML + +document.getElementById(`item-2-cost`).innerHTML + +document.getElementById(`item-3-cost`).innerHTML;
-    }
-    if (id == 3) {
-        document.getElementById(`item-${id}-cost`).innerHTML = +document.getElementById(`item-${id}-cost`).innerHTML - 247;
-        document.getElementById(`cost-all-items`).innerHTML = parseInt(document.getElementById(`cost-all-items`).innerHTML) - 247;
-        document.getElementById(`cost-all-items2`).innerHTML = parseInt(document.getElementById(`cost-all-items2`).innerHTML) - 247 + ' сом';
-        document.getElementById(`without-sale`).textContent = parseInt(document.getElementById(`without-sale`).textContent) - 475 + ' сом';
-        document.getElementById(`without-sale2`).textContent = parseInt(document.getElementById(`without-sale2`).textContent) - 475 + ' сом';
-        document.getElementById(`item${id}-mobile-cost`).firstChild.textContent = parseInt(document.getElementById(`item${id}-mobile-cost`).firstChild.textContent) - 247;
-        document.getElementById(`item-${id}-cost-final`).textContent = (parseInt(document.getElementById(`item-${id}-cost`).textContent) * 100) / (247 * 100 / 475) + ' ' + 'сом';
-        document.getElementById(`item-${id}-cost-final-mobile`).textContent = (parseInt(document.getElementById(`item${id}-mobile-cost`).textContent) * 100) / (247 * 100 / 475) + ' ' + 'сом';
-        document.getElementById('all-items-cost').innerHTML = +document.getElementById(`item-1-cost`).textContent + +document.getElementById(`item-2-cost`).textContent + +document.getElementById(`item-3-cost`).textContent;
-    }
-    if (+document.getElementById('empty-items-count').innerHTML == 0) {
-        document.getElementById('with-sale').textContent = '-' + (parseInt(document.getElementById('without-sale').innerHTML) - parseInt(document.getElementById('cost-all-items').textContent)) + ' сом';
-        document.getElementById('basket-items-count').remove();
-        document.getElementsByClassName('select-all')[0].remove();
-        document.getElementsByClassName('empty-items-header')[0].remove();
-        document.getElementsByClassName('delivery')[0].remove();
-        document.getElementsByClassName('delivery-mobile')[0].remove();
-        document.getElementsByClassName('payment')[0].remove();
-        document.getElementsByClassName('client')[0].remove();
-        document.getElementsByClassName('final-info')[0].remove();
-        document.getElementsByClassName('final-info-mobile')[0].remove();
-        let p = document.createElement('p');
-        p.innerHTML = 'В корзине пусто';
-        document.getElementsByClassName('basket')[0].getElementsByTagName('h1')[0].append(p);
-        document.getElementsByTagName('main')[0].style.height = '1200px';
-        document.getElementById('all-items-cost').innerHTML = +document.getElementById(`item-1-cost`).innerHTML + +document.getElementById(`item-2-cost`).innerHTML + +document.getElementById(`item-3-cost`).innerHTML;
-    }
-}
-
-const showEmptyHeader = () => {
-    if (document.getElementsByClassName('empty-items')[0].style.display == 'none') {
-        document.getElementsByClassName('empty-items')[0].style.display = 'flex';
-        document.getElementById('arrow2').style.transform = 'rotate(360deg)';
-    } else {
-        document.getElementsByClassName('empty-items')[0].style.display = 'none';
-        document.getElementById('arrow2').style.transform = 'rotate(180deg)';
-    }
-}
-
-const showItemsHeader = () => {
-    if (document.getElementsByClassName('items')[0].style.display == 'none') {
-        document.getElementsByClassName('items')[0].style.display = 'block';
-        document.getElementById('visible1').style.display = 'flex';
-        document.getElementById('visible2').style.display = 'none';
-        document.getElementById('arrow').style.transform = 'rotate(360deg)';
-    } else {
-        document.getElementsByClassName('items')[0].style.display = 'none';
-        document.getElementById('visible1').style.display = 'none';
-        document.getElementById('visible2').style.display = 'flex';
-        document.getElementById('arrow').style.transform = 'rotate(180deg)';
-        document.getElementById('all-items-count').innerHTML = +document.getElementById(`item-1-count`).innerHTML + +document.getElementById(`item-2-count`).innerHTML + +document.getElementById(`item-3-count`).innerHTML;
-        document.getElementById('all-items-cost').innerHTML = +document.getElementById(`item-1-cost`).innerHTML + +document.getElementById(`item-2-cost`).innerHTML + +document.getElementById(`item-3-cost`).innerHTML;
-    }
-}
-
-const showEmptyHeaderMobile = () => {
-    if (document.getElementsByClassName('empty-items-mobile')[0].style.display == 'none') {
-        document.getElementsByClassName('empty-items-mobile')[0].style.display = 'flex';
-        document.getElementById('arrow2').style.transform = 'rotate(360deg)';
-    } else {
-        document.getElementsByClassName('empty-items-mobile')[0].style.display = 'none';
-        document.getElementById('arrow2').style.transform = 'rotate(180deg)';
-    }
-}
-
-const showItemsHeaderMobile = () => {
-    if (document.getElementsByClassName('items-mobile')[0].style.display == 'none') {
-        document.getElementsByClassName('items-mobile')[0].style.display = 'block';
-        document.getElementById('visible1').style.display = 'flex';
-        document.getElementById('visible2').style.display = 'none';
-        document.getElementById('arrow').style.transform = 'rotate(360deg)';
-    } else {
-        document.getElementsByClassName('items-mobile')[0].style.display = 'none';
-        document.getElementById('visible1').style.display = 'none';
-        document.getElementById('visible2').style.display = 'flex';
-        document.getElementById('arrow').style.transform = 'rotate(180deg)';
-        document.getElementById('all-items-count').innerHTML = +document.getElementById(`item1-mobile-count`).innerHTML + +document.getElementById(`item2-mobile-count`).innerHTML + +document.getElementById(`item3-mobile-count`).innerHTML;
-        document.getElementById('all-items-cost').innerHTML = parseInt(document.getElementById(`item1-mobile-cost`).firstChild.textContent) + parseInt(document.getElementById(`item2-mobile-cost`).firstChild.textContent) + parseInt(document.getElementById(`item3-mobile-cost`).firstChild.textContent);
-    }
-}
-
-const show = () => {
-    if (document.getElementsByClassName('important2')[0].style.display == 'none') {
-        document.getElementsByClassName('important2')[0].style.display = 'flex';
-    } else {
-        document.getElementsByClassName('important2')[0].style.display = 'none'
-    }
-}
-
-const showFreeInfo = (id) => {
-    if (document.getElementsByClassName(`free-info${id}`)[0].style.display == 'none') {
-        document.getElementsByClassName(`free-info${id}`)[0].style.display = 'flex';
-    } else {
-        document.getElementsByClassName(`free-info${id}`)[0].style.display = 'none';
-    }
-}
-
-const payNow = () => { 
-        if (document.getElementById('oplata-srazu').checked == true) {
-            document.getElementById('zakazat').textContent = 'Оплатить' + " " + document.getElementsByClassName('last')[0].textContent;
+    
+    const likeItem = (el) => {
+        if (el.target.querySelector('path').style.fill == 'rgb(203, 17, 171)') {
+            console.log(el.target.querySelector('path').style.fill);
+            el.target.querySelector('path').style.fill = 'black';
+            alert('Товар удален из избранного');
         } else {
-            document.getElementById('zakazat').textContent = 'Заказать'
+            el.target.querySelector('path').style.fill = 'rgb(203, 17, 171)';
+            alert('Товар добавлен в избранное');
+            console.log(el.target.querySelector('path').style.fill);
+        }
+    }
+    
+    const minusItem = (el) => {
+        let goodIndex = el.srcElement.closest('.good').className.replace('good item-', '').replace('good item', '').replace('-mobile', '');
+        data['item' + goodIndex].count--;
+        if (data['item' + goodIndex].count == 0){
+            delete data['item' + goodIndex];
+        }
+        recalcItems();
+        recalc();
+    }
+
+    const plusItem = (el) => {
+        let goodIndex = el.srcElement.closest('.good').className.replace('good item-', '').replace('good item', '').replace('-mobile', '');
+        let dataInfo = data['item' + goodIndex];
+        if (dataInfo.stock != undefined){
+            if (dataInfo.stock == dataInfo.count){
+                alert('Товара больше нет на складе');
+                return;
+            }
+        }
+        data['item' + goodIndex].count++;
+        recalcItems();
+        recalc();
+    }
+    
+    const selectAll = () => {
+        document.querySelector('#select-all').checked = !document.querySelector('#select-all').checked;
+        document.querySelector(`#item-1`).checked = !document.querySelector(`#item-1`).checked
+        document.querySelector(`#item-2`).checked = !document.querySelector(`#item-2`).checked
+        document.querySelector(`#item-3`).checked = !document.querySelector(`#item-3`).checked
+
+        document.querySelector(`#item1-mobile`).checked = !document.querySelector(`#item1-mobile`).checked
+        document.querySelector(`#item2-mobile`).checked = !document.querySelector(`#item2-mobile`).checked
+        document.querySelector(`#item3-mobile`).checked = !document.querySelector(`#item3-mobile`).checked
+    }
+
+    document.querySelectorAll('.delete').forEach((el, index) => {
+        el.parentNode.addEventListener('click', (el) => deleteItem(el));
+    });
+
+    document.querySelectorAll('.deleteEmpty').forEach((el, index) => {
+        el.parentNode.addEventListener('click', (el) => deleteEmptyItem(el));
+    });
+
+    document.querySelectorAll('.heart').forEach((el) => {
+        el.parentNode.addEventListener('click', (el) => likeItem(el));
+    });
+
+    document.querySelectorAll('.minus').forEach((el, index) => {
+        el.addEventListener('click', (el) => minusItem(el));
+    });
+
+    document.querySelectorAll('.plus').forEach((el, index) => {
+        el.addEventListener('click', (el) => plusItem(el));
+    });
+
+    document.querySelector('#visible1').addEventListener('click', selectAll);
+
+    document.querySelectorAll('.change-card').forEach(elem => {
+        elem.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelector('.popup-bg2').classList.add('active');
+        })
+    });
+
+    document.querySelector('.close-popup2').addEventListener('click', () => {
+        document.querySelector('.popup-bg2').classList.remove('active');
+    })
+
+    let popupBg = document.querySelector('.popup-bg');
+
+    document.querySelectorAll('.change-adress').forEach(elem => {
+        elem.addEventListener('click', (e) => {
+            e.preventDefault();
+            popupBg.classList.add('active');
+        })
+    }); 
+
+    document.querySelector('.close-popup').addEventListener('click', () => {
+        popupBg.classList.remove('active');
+        document.querySelector('.popup-bg2').classList.remove('active');
+    })
+
+    document.querySelector('.mycards').querySelectorAll('li').forEach((el, index) => {
+        index++;
+        el.addEventListener('click', () => {
+            document.querySelector(`#card${index}`).checked = !document.querySelector(`#card${index}`).checked
+        });
+    })
+
+    document.querySelector('#select-card').addEventListener('click', () => {
+        document.querySelector('.popup-bg2').classList.remove('active');
+        if (document.getElementById('card1').checked == true) {
+            document.querySelectorAll('#my-card')[0].src = 'img/mir.svg';
+            document.querySelectorAll('#my-card')[1].src = 'img/mir.svg';
         };
-    
-        if (document.getElementById('buy-now').checked == true) {
-            document.getElementById('zakazat-mobile').textContent = 'Оплатить' + " " + document.getElementsByClassName('last2')[0].textContent;
-        } else {
-            document.getElementById('zakazat-mobile').textContent = 'Заказать'
-        }
-}
+        if (document.getElementById('card2').checked == true) {
+            document.querySelectorAll('#my-card')[0].src = 'img/visa.svg';
+            document.querySelectorAll('#my-card')[1].src = 'img/visa.svg';
+        };
+        if (document.getElementById('card3').checked == true) {
+            document.querySelectorAll('#my-card')[0].src = 'img/mastercard1.svg';
+            document.querySelectorAll('#my-card')[1].src = 'img/mastercard1.svg';
+        };
+        if (document.getElementById('card4').checked == true) {
+            document.querySelectorAll('#my-card')[0].src = 'img/mastercard2.svg';
+            document.querySelectorAll('#my-card')[1].src = 'img/mastercard2.svg';
+        };
+    })  
 
-
-
-
-const oplata = () => {
-    if (document.getElementById('name').value === '' || document.getElementById('surname').value === '' || document.getElementById('email').value === '' || document.getElementById('number').value === '' || document.getElementById('inn').value === '') {
-        alert('Заполните все поля');
-        if (document.getElementById('name').value === '') {
-            document.getElementById('name').style.borderColor = 'rgba(245, 81, 35, 1)';
-            document.getElementById('write-name').style.display = 'block';
-        }
-        if (document.getElementById('surname').value === '') {
-            document.getElementById('surname').style.borderColor = 'rgba(245, 81, 35, 1)';
-            document.getElementById('write-surname').style.display = 'block';
-        }
-        if (document.getElementById('email').value === '') {
-            document.getElementById('email').style.borderColor = 'rgba(245, 81, 35, 1)';
-            document.getElementById('write-email').style.display = 'block';
-        }
-        if (document.getElementById('number').value === '') {
-            document.getElementById('number').style.borderColor = 'rgba(245, 81, 35, 1)';
-            document.getElementById('write-number').style.display = 'block';
-        }
-        if (document.getElementById('inn').value === '') {
-            document.getElementById('inn').style.borderColor = 'rgba(245, 81, 35, 1)';
-            document.getElementById('write-inn').style.display = 'block';
-            document.getElementById('tamoshna').style.display = 'none';
-        }
-    } 
-    else if (document.getElementById('name').style.color == 'black' && document.getElementById('surname').style.color == 'black' && document.getElementById('email').style.color == 'black' && document.getElementById('number').style.color == 'black' && document.getElementById('inn').style.color == 'black') {
-        alert('Спасибо за заказ!');
-    }
-}
-
-const oplataMobile = () => {
-    if (document.getElementById('name').value === '' || document.getElementById('surname').value === '' || document.getElementById('email-mobile').value === '' || document.getElementById('number').value === '' || document.getElementById('inn').value === '') {
-        alert('Заполните все поля');
-        if (document.getElementById('name').value === '') {
-            document.getElementById('name').style.borderColor = 'rgba(245, 81, 35, 1)';
-            document.getElementById('write-name').style.display = 'block';
-        }
-        if (document.getElementById('surname').value === '') {
-            document.getElementById('surname').style.borderColor = 'rgba(245, 81, 35, 1)';
-            document.getElementById('write-surname').style.display = 'block';
-        }
-        if (document.getElementById('email-mobile').value === '') {
-            document.getElementById('email-mobile').style.borderColor = 'rgba(245, 81, 35, 1)';
-            document.getElementById('write-email-mobile').style.display = 'block';
-        }
-        if (document.getElementById('number').value === '') {
-            document.getElementById('number').style.borderColor = 'rgba(245, 81, 35, 1)';
-            document.getElementById('write-number').style.display = 'block';
-        }
-        if (document.getElementById('inn').value === '') {
-            document.getElementById('inn').style.borderColor = 'rgba(245, 81, 35, 1)';
-            document.getElementById('write-inn').style.display = 'block';
-            document.getElementById('tamoshna').style.display = 'none';
-        }
-    } 
-    else if (document.getElementById('name').style.color == 'black' && document.getElementById('surname').style.color == 'black' && document.getElementById('email-mobile').style.color == 'black' && document.getElementById('number').style.color == 'black' && document.getElementById('inn').style.color == 'black') {
-        alert('Спасибо за заказ!');
-    }
-}
-
-const showSaleBlock = () => {
-    if (document.getElementById('item2-sale').style.display == 'none') {
-        document.getElementById('item2-sale').style.display = 'flex';
-    } else {
-        document.getElementById('item2-sale').style.display = 'none';
-    }
-    
-}
-
-
-
-
-
-
-
-
-
-document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#name').addEventListener('blur', () => {
         if (document.querySelector('#name').value !== '') {
             if ( /^[А-ЯЁ][а-яё]+$/.test(document.querySelector('#name').value) ) {
@@ -506,141 +312,251 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     })
 
+    document.querySelector('.payment-check').addEventListener('click', () => {
+        if (document.querySelector('#oplata-srazu').checked) {
+            let keys = Object.keys(data);
+            let totalCostDiscount = 0;
+            keys.forEach(key => {
+                let dataInfo = data[key];
+                totalCostDiscount += dataInfo.count * dataInfo.costDiscount;
+            });
+            document.querySelector('#zakazat').textContent = 'Оплатить ' + totalCostDiscount + ' сом';
+            document.querySelector('#srazu').style.display = 'none';
+            document.querySelector('#spishem-srazu').textContent = 'Спишем оплату с карты сразу';
+            document.querySelector('.payment-check').style.height = '42px';
+        } else {
+            document.querySelector('#zakazat').textContent = 'Заказать';
+            document.querySelector('#srazu').style.display = 'block';
+            document.querySelector('#spishem-srazu').textContent = 'Спишем оплату с карты при получении';
+            document.querySelector('.payment-check').style.height = '66px';
+        }
+    })
 
-    document.querySelectorAll('.delete-adress').forEach(element => {
-        element.addEventListener('click', () => {
-            element.parentElement.remove();
-        })
-    }); 
+    const oplata = () => {
+        if (document.getElementById('name').value === '' || document.getElementById('surname').value === '' || document.getElementById('email').value === '' || document.getElementById('number').value === '' || document.getElementById('inn').value === '') {
+            alert('Заполните все поля');
+            if (document.getElementById('name').value === '') {
+                document.getElementById('name').style.borderColor = 'rgba(245, 81, 35, 1)';
+                document.getElementById('write-name').style.display = 'block';
+            }
+            if (document.getElementById('surname').value === '') {
+                document.getElementById('surname').style.borderColor = 'rgba(245, 81, 35, 1)';
+                document.getElementById('write-surname').style.display = 'block';
+            }
+            if (document.getElementById('email').value === '') {
+                document.getElementById('email').style.borderColor = 'rgba(245, 81, 35, 1)';
+                document.getElementById('write-email').style.display = 'block';
+            }
+            if (document.getElementById('number').value === '') {
+                document.getElementById('number').style.borderColor = 'rgba(245, 81, 35, 1)';
+                document.getElementById('write-number').style.display = 'block';
+            }
+            if (document.getElementById('inn').value === '') {
+                document.getElementById('inn').style.borderColor = 'rgba(245, 81, 35, 1)';
+                document.getElementById('write-inn').style.display = 'block';
+                document.getElementById('tamoshna').style.display = 'none';
+            }
+        } 
+        else if (document.getElementById('name').style.color == 'black' && document.getElementById('surname').style.color == 'black' && document.getElementById('email').style.color == 'black' && document.getElementById('number').style.color == 'black' && document.getElementById('inn').style.color == 'black') {
+                if (document.querySelector('.custom2').checked) {
+                    alert('Спасибо за заказ!');
+                } else {
+                    alert('Подтвердите соглашение');
+                }
+        } 
+    }
+    
+    
+    const oplataMobile = () => {
+        if (document.getElementById('name').value === '' || document.getElementById('surname').value === '' || document.getElementById('email-mobile').value === '' || document.getElementById('number').value === '' || document.getElementById('inn').value === '') {
+            alert('Заполните все поля');
+            if (document.getElementById('name').value === '') {
+                document.getElementById('name').style.borderColor = 'rgba(245, 81, 35, 1)';
+                document.getElementById('write-name').style.display = 'block';
+            }
+            if (document.getElementById('surname').value === '') {
+                document.getElementById('surname').style.borderColor = 'rgba(245, 81, 35, 1)';
+                document.getElementById('write-surname').style.display = 'block';
+            }
+            if (document.getElementById('email-mobile').value === '') {
+                document.getElementById('email-mobile').style.borderColor = 'rgba(245, 81, 35, 1)';
+                document.getElementById('write-email-mobile').style.display = 'block';
+            }
+            if (document.getElementById('number').value === '') {
+                document.getElementById('number').style.borderColor = 'rgba(245, 81, 35, 1)';
+                document.getElementById('write-number').style.display = 'block';
+            }
+            if (document.getElementById('inn').value === '') {
+                document.getElementById('inn').style.borderColor = 'rgba(245, 81, 35, 1)';
+                document.getElementById('write-inn').style.display = 'block';
+                document.getElementById('tamoshna').style.display = 'none';
+            }
+        } 
+        else if (document.getElementById('name').style.color == 'black' && document.getElementById('surname').style.color == 'black' && document.getElementById('email-mobile').style.color == 'black' && document.getElementById('number').style.color == 'black' && document.getElementById('inn').style.color == 'black') {
+            if (document.getElementsByClassName('custom2')[1].checked) {
+                alert('Спасибо за заказ!');
+            } else {
+                alert('Подтвердите соглашение');
+            }
+        }
+    }
+    
+    document.querySelector('#zakazat').addEventListener('click', oplata);
+    document.querySelector('#zakazat-mobile').addEventListener('click', oplataMobile);
 
-    document.querySelectorAll('.types').forEach(element => {
-        element.addEventListener('click', () => {
-            document.querySelectorAll('.types')[0].style.borderColor = 'rgba(203, 17, 171, 0.15)';
-            document.querySelectorAll('.types')[1].style.borderColor = 'rgba(203, 17, 171, 0.15)';
-            element.style.borderColor = 'rgba(203, 17, 171, 1)';
-            if (element == document.querySelectorAll('.types')[0]) {
-                document.getElementById('adress-1-name').innerHTML = 'г. Бишкек, микрорайон Джал, улица Ахунбаева Исы, д. 67/1<nav><img src="img/Stars.svg" alt="">Пункт выдачи</nav>';
-                document.getElementById('adress-2-name').innerHTML = 'г. Бишкек, микрорайон Джал, улица Ахунбаева Исы, д. 67/1<nav><img src="img/Stars.svg" alt="">Пункт выдачи</nav>';
-                document.getElementById('adress-3-name').innerHTML = 'г. Бишкек, улица Табышалиева, д. 57<nav><img src="img/Stars.svg" alt="">Пункт выдачи</nav>';
+    document.querySelector('#punkt').addEventListener('click', () => {
+        document.querySelector('#adresses1').style.display = 'none';
+        document.querySelector('#adresses2').style.display = 'block';
+        document.querySelector('#punkt').style.borderColor = 'rgb(203, 17, 171)';
+        document.querySelector('#delivery').style.borderColor = 'rgba(203, 17, 171, 0.15)';
+    })
+
+    document.querySelector('#delivery').addEventListener('click', () => {
+        document.querySelector('#adresses2').style.display = 'none';
+        document.querySelector('#adresses1').style.display = 'block';
+        document.querySelector('#punkt').style.borderColor = 'rgba(203, 17, 171, 0.15)';
+        document.querySelector('#delivery').style.borderColor = 'rgb(203, 17, 171)';
+    })
+   
+    document.querySelectorAll('.delete-adress').forEach((el) => {
+        el.addEventListener('click', () => {
+            el.parentElement.remove();
+            if (document.querySelector('#adresses1').querySelectorAll('li').length === 0) {
+                document.querySelector('#adresses1').textContent = 'Адресов нет'
             };
-            if (element == document.querySelectorAll('.types')[1]) {
-                document.getElementById('adress-1-name').textContent = 'Бишкек, улица Табышалиева, 57';
-                document.getElementById('adress-2-name').textContent = 'Бишкек, улица Жукеева-Пудовкина, 77/1';
-                document.getElementById('adress-3-name').innerHTML = 'Бишкек, микрорайон Джал, улица Ахунбаева Исы,<br/>67/1';
+            if (document.querySelector('#adresses2').querySelectorAll('li').length === 0) {
+                document.querySelector('#adresses2').textContent = 'Адресов нет'
             };
+        });
+    })
+
+    document.querySelector('#adresses1').querySelectorAll('li').forEach((el) => {
+        el.querySelector('label').addEventListener('click', () => {
+            el.querySelector('input').checked = !el.querySelector('input').checked;
         })
-    });
+    })
 
-    let popupBg = document.querySelector('.popup-bg');
-
-    document.querySelectorAll('.change-adress').forEach(elem => {
-        elem.addEventListener('click', (e) => {
-            e.preventDefault();
-            popupBg.classList.add('active');
+    document.querySelector('#adresses2').querySelectorAll('li').forEach((el) => {
+        el.querySelector('label').addEventListener('click', () => {
+            el.querySelector('input').checked = !el.querySelector('input').checked;
         })
-    });
-
-    document.querySelector('.close-popup').addEventListener('click', () => {
-        popupBg.classList.remove('active');
-        document.querySelector('.popup-bg2').classList.remove('active');
     })
 
     document.querySelector('#select-adress').addEventListener('click', () => {
-        if (document.querySelectorAll('.types')[0].style.borderColor == 'rgb(203, 17, 171)') {
-            document.getElementById('type-delivery').textContent = 'Пункт выдачи';
-            document.getElementById('type-delivery2').textContent = 'Пункт выдачи';
-            document.getElementById('type-delivery3').textContent = 'Курьером';
+        if (document.querySelector('#punkt').style.borderColor === 'rgb(203, 17, 171)') {
+            document.querySelector('#type-delivery').textContent = 'Пункт выдачи';
+            document.querySelector('#type-delivery3').textContent = 'Доставка в пункт выдачи';
+        } else {
+            document.querySelector('#type-delivery').textContent = 'Курьером';
+            document.querySelector('#type-delivery3').textContent = 'Доставка курьером';
         }
-        if (document.querySelectorAll('.types')[1].style.borderColor == 'rgb(203, 17, 171)') {
-            document.getElementById('type-delivery').textContent = 'Курьером';
-            document.getElementById('type-delivery2').textContent = 'Курьером';
-            document.getElementById('type-delivery3').textContent = 'Курьером';
-        };
-
-        if ( document.getElementById('type-delivery').textContent == 'Курьером') {
-            if (document.getElementById('adress1').checked == true) {
-                document.getElementById('delivery-name').innerHTML = 'Бишкек, улица Табышалиева, 57';
-                document.getElementById('delivery-name2').innerHTML = 'Бишкек, улица Табышалиева, 57';
-                document.getElementById('delivery-name3').innerHTML = 'Бишкек, улица Табышалиева, 57';
-                document.querySelector('.time').style.display = 'none';
-            };
-            if (document.getElementById('adress2').checked == true) {
-                document.getElementById('delivery-name').innerHTML = 'Бишкек, улица Жукеева-Пудовкина, 77/1';
-                document.getElementById('delivery-name2').innerHTML = 'Бишкек, улица Жукеева-Пудовкина, 77/1';
-                document.getElementById('delivery-name3').innerHTML = 'Бишкек, улица Жукеева-Пудовкина, 77/1';
-                document.querySelector('.time').style.display = 'none';
-            };
-            if (document.getElementById('adress3').checked == true) {
-                document.getElementById('delivery-name').innerHTML = 'Бишкек, микрорайон Джал, улица Ахунбаева Исы, 67/1';
-                document.getElementById('delivery-name2').innerHTML = 'Бишкек, микрорайон Джал, улица Ахунбаева Исы, 67/1';
-                document.getElementById('delivery-name3').innerHTML = 'Бишкек, микрорайон Джал, улица Ахунбаева Исы, 67/1';
-                document.querySelector('.time').style.display = 'none';
+        document.querySelector('.popup').querySelectorAll('li').forEach((el) => {
+            if (el.querySelector('input').checked) {
+                document.querySelector('#delivery-name').innerHTML = el.querySelector('label').innerHTML;
+                document.querySelector('#delivery-name3').innerHTML = el.querySelector('label').innerHTML;
             }
-        }
-
-        if ( document.getElementById('type-delivery').textContent == 'Пункт выдачи') {
-            if (document.getElementById('adress1').checked == true) {
-                document.getElementById('delivery-name').innerHTML = 'г. Бишкек, микрорайон Джал, улица Ахунбаева Исы, д. 67/1<nav><img src="img/Stars.svg" alt="">Пункт выдачи</nav>';
-                document.getElementById('delivery-name2').innerHTML = 'г. Бишкек, микрорайон Джал, улица Ахунбаева Исы, д. 67/1';
-                document.getElementById('delivery-name3').innerHTML = 'г. Бишкек, микрорайон Джал, улица Ахунбаева Исы, д. 67/1';
-                document.querySelector('.time').style.display = 'flex';
-            };
-            if (document.getElementById('adress2').checked == true) {
-                document.getElementById('delivery-name').innerHTML = 'г. Бишкек, микрорайон Джал, улица Ахунбаева Исы, д. 67/1<nav><img src="img/Stars.svg" alt=""> 4.99 Ежедневно с 10 до 21 </nav>';
-                document.getElementById('delivery-name2').innerHTML = 'г. Бишкек, микрорайон Джал, улица Ахунбаева Исы, д. 67/1';
-                document.getElementById('delivery-name3').innerHTML = 'г. Бишкек, микрорайон Джал, улица Ахунбаева Исы, д. 67/1';
-                document.querySelector('.time').style.display = 'flex';
-            };
-            if (document.getElementById('adress3').checked == true) {
-                document.getElementById('delivery-name').innerHTML = 'г. Бишкек, улица Табышалиева, д. 57<nav><img src="img/Stars.svg" alt="">Пункт выдачи</nav>';
-                document.getElementById('delivery-name2').innerHTML = 'г. Бишкек, улица Табышалиева, д. 57';
-                document.getElementById('delivery-name3').innerHTML = 'г. Бишкек, улица Табышалиева, д. 57';
-                document.querySelector('.time').style.display = 'flex';
-            }
-        }
+        })
         popupBg.classList.remove('active');
     })
 
-    document.querySelectorAll('.change-card').forEach(elem => {
-        elem.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.querySelector('.popup-bg2').classList.add('active');
+    const showItemsHeader = () => {
+        if (window.innerWidth > 320) {
+            if (document.querySelector('.items').style.display == 'none') {
+                document.querySelector('.items').style.display = 'block';
+                document.getElementById('visible1').style.display = 'flex';
+                document.getElementById('visible2').style.display = 'none';
+                document.getElementById('arrow').style.transform = 'rotate(360deg)';
+            } else {
+                document.querySelector('.items').style.display = 'none';
+                document.querySelector('.items-mobile').style.display = 'none';
+                document.getElementById('visible1').style.display = 'none';
+                document.getElementById('visible2').style.display = 'flex';
+                document.getElementById('arrow').style.transform = 'rotate(180deg)';
+            } 
+        } else {
+            document.querySelector('.items').style.display = 'none';
+            if (document.querySelector('.items-mobile').style.display == 'none') {
+                document.querySelector('.items-mobile').style.display = 'flex';
+                document.getElementById('visible1').style.display = 'flex';
+                document.getElementById('visible2').style.display = 'none';
+                document.getElementById('arrow').style.transform = 'rotate(360deg)';
+            } else {
+                document.querySelector('.items-mobile').style.display = 'none';
+                document.querySelector('.items').style.display = 'none';
+                document.getElementById('visible1').style.display = 'none';
+                document.getElementById('visible2').style.display = 'flex';
+                document.getElementById('arrow').style.transform = 'rotate(180deg)';
+            }
+        }
+    }
+
+    const showEmptyHeader = () => {
+        if (window.innerWidth > 320) {
+            if (document.querySelector('.empty-items').style.display == 'none') {
+                document.querySelector('.empty-items').style.display = 'flex';
+                document.getElementById('arrow2').style.transform = 'rotate(360deg)';
+            } else {
+                document.querySelector('.empty-items').style.display = 'none';
+                document.getElementById('arrow2').style.transform = 'rotate(180deg)';
+            }
+        } 
+        if (window.innerWidth <= 320) {
+            if (document.querySelector('.empty-items-mobile').style.display == 'none') {
+                document.querySelector('.empty-items-mobile').style.display = 'flex';
+                document.getElementById('arrow2').style.transform = 'rotate(360deg)';
+            } else {
+                document.querySelector('.empty-items-mobile').style.display = 'none';
+                document.getElementById('arrow2').style.transform = 'rotate(180deg)';
+            }
+        }
+    }
+
+    const showSaleBlock = () => {
+        if (document.querySelector('#item2-sale').style.display === 'flex') {
+            document.querySelector('#item2-sale').style.display = 'none';
+        } else {
+            document.querySelector('#item2-sale').style.display = 'flex';
+        }
+    }
+
+    const showKoledino = () => {
+        if (document.querySelector('.important2').style.display === 'flex') {
+            document.querySelector('.important2').style.display = 'none';
+        } else {
+            document.querySelector('.important2').style.display = 'flex';
+        }
+    }
+
+    const showFreeInfo = () => {
+        if (document.querySelector('.free-info2').style.display === 'flex') {
+            document.querySelector('.free-info2').style.display = 'none';
+        } else {
+            document.querySelector('.free-info2').style.display = 'flex';
+        }
+    }
+
+    const showFreeInfo2 = () => {
+        if (document.querySelector('.free-info1').style.display === 'flex') {
+            document.querySelector('.free-info1').style.display = 'none';
+        } else {
+            document.querySelector('.free-info1').style.display = 'flex';
+        }
+    }
+
+    document.querySelector('#arrow').addEventListener('click', showItemsHeader);
+    document.querySelector('#arrow2').addEventListener('click', showEmptyHeader);
+    document.querySelector('#item-2-cost-final').addEventListener('click', showSaleBlock);
+    document.querySelector('#koledino').addEventListener('click', showKoledino);
+    document.querySelector('#free').addEventListener('click', showFreeInfo);
+    document.querySelector('#free2').addEventListener('click', showFreeInfo2);
+
+    for (let index = 1; index < 4; index++) {
+        document.querySelector(`.item${index}-mobile-info`).addEventListener('click', () => {
+            document.querySelector(`#item${index}-mobile`).checked = !document.querySelector(`#item${index}-mobile`).checked;
         })
-    });
+        document.querySelector(`.item${index}-logo`).addEventListener('click', () => {
+            document.querySelector(`#item${index}-mobile`).checked = !document.querySelector(`#item${index}-mobile`).checked;
+        })
+    }   
 
-    document.querySelector('.close-popup2').addEventListener('click', () => {
-        document.querySelector('.popup-bg2').classList.remove('active');
-    })
-
-    document.querySelector('#select-card').addEventListener('click', () => {
-        document.querySelector('.popup-bg2').classList.remove('active');
-        if (document.getElementById('card1').checked == true) {
-            document.querySelectorAll('#my-card')[0].src = 'img/mir.svg';
-            document.querySelectorAll('#my-card')[1].src = 'img/mir.svg';
-        };
-        if (document.getElementById('card2').checked == true) {
-            document.querySelectorAll('#my-card')[0].src = 'img/visa.svg';
-            document.querySelectorAll('#my-card')[1].src = 'img/visa.svg';
-        };
-        if (document.getElementById('card3').checked == true) {
-            document.querySelectorAll('#my-card')[0].src = 'img/mastercard1.svg';
-            document.querySelectorAll('#my-card')[1].src = 'img/mastercard1.svg';
-        };
-        if (document.getElementById('card4').checked == true) {
-            document.querySelectorAll('#my-card')[0].src = 'img/mastercard2.svg';
-            document.querySelectorAll('#my-card')[1].src = 'img/mastercard2.svg';
-        };
-    })
-    
- }, false);
-
-
-
-
-
-
-
-
-
-
-
+}); 
